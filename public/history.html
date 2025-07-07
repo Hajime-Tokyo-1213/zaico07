@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在庫可視化ツール - 取引履歴</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>在庫可視化ツール</h1>
+        <nav>
+            <a href="/">ダッシュボード</a>
+            <a href="/history" class="active">取引履歴</a>
+            <button id="refreshBtn" class="refresh-btn">データ更新</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>完了済み取引</h2>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>完了済み国内取引</h3>
+                    <p class="stat-number" id="completedDomesticCount">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>完了済み直接取引</h3>
+                    <p class="stat-number" id="completedDirectCount">0</p>
+                </div>
+            </div>
+
+            <div class="section" id="completedDomesticSection">
+                <h3 class="section-header">
+                    <button class="accordion-btn active" data-target="completedDomesticContent">
+                        <span>完了済み国内取引</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                </h3>
+                <div id="completedDomesticContent" class="accordion-content show">
+                    <div class="table-container">
+                        <table id="completedDomesticTable">
+                            <thead>
+                                <tr>
+                                    <th>管理番号</th>
+                                    <th>仕入先</th>
+                                    <th>商品名</th>
+                                    <th>シート名</th>
+                                    <th>出荷日</th>
+                                    <th>ステータス</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="completedDirectSection">
+                <h3 class="section-header">
+                    <button class="accordion-btn active" data-target="completedDirectContent">
+                        <span>完了済み直接取引</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                </h3>
+                <div id="completedDirectContent" class="accordion-content show">
+                    <div class="table-container">
+                        <table id="completedDirectTable">
+                            <thead>
+                                <tr>
+                                    <th>取引番号</th>
+                                    <th>取引先</th>
+                                    <th>商品名</th>
+                                    <th>注文数</th>
+                                    <th>発送済み数</th>
+                                    <th>ステータス</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>データを読み込み中...</p>
+    </div>
+
+    <script src="/js/history.js"></script>
+</body>
+</html>

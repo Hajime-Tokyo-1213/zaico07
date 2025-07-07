@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在庫可視化ツール - ダッシュボード</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>在庫可視化ツール</h1>
+        <nav>
+            <a href="/" class="active">ダッシュボード</a>
+            <a href="/history">取引履歴</a>
+            <button id="refreshBtn" class="refresh-btn">データ更新</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>未完了取引</h2>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>国内取引</h3>
+                    <p class="stat-number" id="domesticCount">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>直接取引</h3>
+                    <p class="stat-number" id="directCount">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>在庫アイテム</h3>
+                    <p class="stat-number" id="zaicoCount">0</p>
+                </div>
+            </div>
+
+            <div class="section" id="domesticSection">
+                <h3 class="section-header">
+                    <button class="accordion-btn" data-target="domesticContent">
+                        <span>国内取引</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                </h3>
+                <div id="domesticContent" class="accordion-content">
+                    <div class="table-container">
+                        <table id="domesticTable">
+                            <thead>
+                                <tr>
+                                    <th>管理番号</th>
+                                    <th>仕入先</th>
+                                    <th>商品名</th>
+                                    <th>シート名</th>
+                                    <th>ステータス</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="directSection">
+                <h3 class="section-header">
+                    <button class="accordion-btn" data-target="directContent">
+                        <span>直接取引</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                </h3>
+                <div id="directContent" class="accordion-content">
+                    <div class="table-container">
+                        <table id="directTable">
+                            <thead>
+                                <tr>
+                                    <th>取引番号</th>
+                                    <th>取引先</th>
+                                    <th>商品名</th>
+                                    <th>注文数</th>
+                                    <th>発送済み</th>
+                                    <th>残数</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="zaicoSection">
+                <h3 class="section-header">
+                    <button class="accordion-btn" data-target="zaicoContent">
+                        <span>在庫データ (Zaico)</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                </h3>
+                <div id="zaicoContent" class="accordion-content">
+                    <div class="table-container">
+                        <table id="zaicoTable">
+                            <thead>
+                                <tr>
+                                    <th>商品コード</th>
+                                    <th>商品名</th>
+                                    <th>数量</th>
+                                    <th>単位</th>
+                                    <th>カテゴリ</th>
+                                    <th>場所</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>データを読み込み中...</p>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
