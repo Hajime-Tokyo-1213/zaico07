@@ -1,51 +1,73 @@
 # 在庫可視化ツール
 
-ZaicoとGoogleスプレッドシートからデータを集約し、取引の進捗状況を可視化するWebアプリケーション
+Zaicoと複数のGoogleスプレッドシートのデータを統合し、在庫状況を一覧で可視化するための社内向けツールです。
 
-## セットアップ
+## 主な機能
 
-### 1. 依存関係のインストール
-```bash
-npm install
-```
+- 各種スプレッドシート（入受出荷管理、インボイス、発送管理）のデータを集計
+- Zaico APIから現在の在庫情報を取得
+- 集計したデータを元に、未完了の取引や在庫状況をダッシュボードに表示
 
-### 2. 環境変数の設定
-`.env.example`を`.env`にコピーして、必要な情報を入力：
+---
 
-```bash
-cp .env.example .env
-```
+## 1. ローカル開発環境のセットアップ
 
-以下の環境変数を設定：
-- `ZAICO_API_TOKEN`: Zaico APIのアクセストークン
-- `GOOGLE_APPLICATION_CREDENTIALS`: Google Sheetsサービスアカウントキーファイルのパス
-- `PORT`: サーバーポート（デフォルト: 3000）
+このプロジェクトをご自身のPCで動かすための手順です。
 
-### 3. Google Sheetsサービスアカウントの設定
-1. Google Cloud Consoleでサービスアカウントを作成
-2. JSONキーファイルをダウンロード
-3. キーファイルを安全な場所に配置し、`GOOGLE_APPLICATION_CREDENTIALS`にパスを設定
-4. 対象のGoogleスプレッドシートにサービスアカウントのメールアドレスを閲覧権限で共有
+### 必要なもの
 
-## 起動方法
+- [Node.js](https://nodejs.org/ja/) (バージョン 18 以上を推奨)
+- [Git](https://git-scm.com/)
 
-### 開発環境
-```bash
-npm run dev
-```
+### セットアップ手順
 
-### 本番環境
-```bash
-npm start
-```
+1.  **リポジトリをクローン**
+    ```bash
+    git clone https://github.com/Hajime-Tokyo-1213/zaico07.git
+    cd zaicoNote250707
+    ```
 
-## アクセス
-- ダッシュボード: http://localhost:3000/
-- 取引履歴: http://localhost:3000/history
+2.  **必要なパッケージをインストール**
+    ```bash
+    npm install
+    ```
 
-## 機能
-- 未完了取引の表示（国内取引・直接取引）
-- 完了済み取引の履歴表示
-- Zaico在庫データの表示
-- データの自動更新（5分間キャッシュ）
-- 手動データ更新機能
+3.  **環境変数ファイルを作成**
+    プロジェクトのルートに `.env` という名前のファイルを作成し、以下の内容を貼り付けます。
+    値はプロジェクト管理者から安全な方法（チャエンなど）で共有してもらってください。
+
+    ```env
+    # Zaico APIのアクセストークン
+    ZAICO_API_TOKEN=xxxxxxxxxxxx
+
+    # Google Service AccountのクライアントEmail
+    GOOGLE_CLIENT_EMAIL=your-account@your-project.iam.gserviceaccount.com
+
+    # Google Service Accountの秘密鍵
+    # -----BEGIN PRIVATE KEY----- から -----END PRIVATE KEY-----\n まで全てを貼り付け
+    GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n.....\n-----END PRIVATE KEY-----\n"
+    ```
+
+    **【重要】** `.env` ファイルは機密情報を含むため、絶対にGitでコミットしないでください。
+
+4.  **開発サーバーを起動**
+    ```bash
+    npm start
+    ```
+    ブラウザで `http://localhost:3000` を開くと、アプリケーションが表示されます。
+
+---
+
+## 2. Vercelへのデプロイについて
+
+このプロジェクトは、GitHubの`main`ブランチにコードがプッシュされると、自動的にVercelにデプロイされるように設定されています。
+
+### 環境変数
+
+Vercel上でアプリケーションを正しく動作させるために、ローカル開発で使ったものと同じ環境変数をVercel側にも設定する必要があります。
+
+1.  Vercelのプロジェクトページにアクセスします。
+2.  「Settings」 > 「Environment Variables」を開きます。
+3.  `.env`ファイルに設定した`ZAICO_API_TOKEN`, `GOOGLE_CLIENT_EMAIL`, `GOOGLE_PRIVATE_KEY`の3つを、それぞれ同じ名前で登録します。
+
+この設定により、デプロイされたアプリケーションもZaicoとGoogle SheetsのAPIに正しくアクセスできるようになります。
