@@ -1,13 +1,28 @@
 {
+  "version": 2,
   "functions": {
     "src/server.js": {
       "maxDuration": 60
     }
   },
-  "rewrites": [
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "src/server.js"
+      "src": "src/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*\\.(css|js|ico|png|jpg|jpeg|gif|svg))",
+      "dest": "public/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/server.js"
     }
   ]
 } 
