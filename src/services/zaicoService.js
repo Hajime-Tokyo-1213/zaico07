@@ -21,7 +21,11 @@ class ZaicoService {
       while (nextUrl) {
         const response = await this.axiosInstance.get(nextUrl);
         
-        if (response.data && response.data.inventories) {
+        // response.dataが直接配列として返ってくる
+        if (Array.isArray(response.data)) {
+          allInventories = [...allInventories, ...response.data];
+        } else if (response.data && response.data.inventories) {
+          // 念のため旧形式にも対応
           allInventories = [...allInventories, ...response.data.inventories];
         }
 
@@ -29,6 +33,7 @@ class ZaicoService {
         nextUrl = this.getNextPageUrl(linkHeader);
       }
 
+      console.log(`Zaico API: 取得したアイテム数: ${allInventories.length}`);
       return allInventories;
     } catch (error) {
       console.error('Error fetching Zaico inventories:', error.message);

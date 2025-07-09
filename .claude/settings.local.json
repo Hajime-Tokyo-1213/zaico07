@@ -3,7 +3,11 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(rg:*)",
-      "WebFetch(domain:developers.google.com)"
+      "WebFetch(domain:developers.google.com)",
+      "Bash(npm start)",
+      "Bash(curl:*)",
+      "Bash(open http://localhost:3000)",
+      "Bash(node:*)"
     ],
     "deny": []
   }

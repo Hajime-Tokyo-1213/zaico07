@@ -38,7 +38,7 @@
             <div class="section" id="domesticSection">
                 <h3 class="section-header">
                     <button class="accordion-btn" data-target="domesticContent">
-                        <span>国内取引</span>
+                        <span>国内取引 <span id="domesticTotalAmount" class="total-amount"></span></span>
                         <span class="arrow">▼</span>
                     </button>
                 </h3>
@@ -50,6 +50,8 @@
                                     <th>管理番号</th>
                                     <th>仕入先</th>
                                     <th>商品名</th>
+                                    <th>仕入価格</th>
+                                    <th>追跡番号</th>
                                     <th>シート名</th>
                                     <th>ステータス</th>
                                 </tr>
@@ -94,20 +96,8 @@
                     </button>
                 </h3>
                 <div id="zaicoContent" class="accordion-content">
-                    <div class="table-container">
-                        <table id="zaicoTable">
-                            <thead>
-                                <tr>
-                                    <th>商品コード</th>
-                                    <th>商品名</th>
-                                    <th>数量</th>
-                                    <th>単位</th>
-                                    <th>カテゴリ</th>
-                                    <th>場所</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <div id="zaicoCategories">
+                        <!-- カテゴリごとのアコーディオンがここに動的に生成されます -->
                     </div>
                 </div>
             </div>

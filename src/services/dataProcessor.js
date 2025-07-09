@@ -36,8 +36,10 @@ class DataProcessor {
     const result = {
       pending: {
         domestic: domesticTransactions.pending,
+        domesticTotalAmount: domesticTransactions.totalAmount,
         direct: directTransactions.pending,
-        zaico: zaicoTransactions
+        zaico: zaicoTransactions.flat,
+        zaicoByCategory: zaicoTransactions.grouped
       },
       completed: {
         domestic: domesticTransactions.completed,
@@ -54,6 +56,7 @@ class DataProcessor {
   processDomesticTransactions(inShippingData) {
     const pending = [];
     const completed = [];
+    let totalAmount = 0;
 
     inShippingData.forEach(item => {
       // 管理番号を数値に変換
@@ -79,6 +82,8 @@ class DataProcessor {
         managementNumber: item.managementNumber,
         supplier: item.supplier,
         productName: item.productName,
+        purchasePrice: item.purchasePrice || 0,
+        trackingNumber: item.trackingNumber || '',
         receiveDate: item.receiveDate,
         shipDate: item.shipDate,
         shippedCheck: item.shippedCheck,
@@ -89,10 +94,11 @@ class DataProcessor {
         completed.push(transaction);
       } else {
         pending.push(transaction);
+        totalAmount += item.purchasePrice || 0;
       }
     });
 
-    return { pending, completed };
+    return { pending, completed, totalAmount };
   }
 
   processDirectTransactions(invoiceData, germanShippingData) {
@@ -113,6 +119,12 @@ class DataProcessor {
     invoiceData.forEach(invoice => {
       const key = (invoice.invoiceNumber || '').trim();
       if (!key) return;
+      
+      // Likeの取引はスキップし、デボンの取引のみ処理
+      const partner = (invoice.partner || '').toLowerCase();
+      if (partner.includes('like')) {
+        return; // Likeの取引はスキップ
+      }
       
       const shippedQuantity = shippingMap.get(key) || 0;
       
@@ -147,19 +159,64 @@ class DataProcessor {
   }
 
   processZaicoData(zaicoData) {
-    if (!zaicoData || !Array.isArray(zaicoData)) return [];
+    if (!zaicoData || !Array.isArray(zaicoData)) {
+      return { flat: [], grouped: {} };
+    }
 
-    return zaicoData.map(item => ({
-      type: 'zaico',
-      id: item.id,
-      title: item.title || '',
-      code: item.code || '',
-      quantity: item.quantity || 0,
-      unit: item.unit || '',
-      category: item.category || '',
-      place: item.place || '',
-      lastUpdated: item.updated_at || ''
-    }));
+    // カテゴリごとにグループ化
+    const groupedByCategory = {};
+    
+    zaicoData.forEach(item => {
+      const category = item.category || '未分類';
+      
+      if (!groupedByCategory[category]) {
+        groupedByCategory[category] = {
+          items: [],
+          totalAmount: 0
+        };
+      }
+      
+      // 仕入単価を取得
+      let unitPrice = 0;
+      if (item.optional_attributes && Array.isArray(item.optional_attributes)) {
+        const priceAttr = item.optional_attributes.find(attr => attr.name === '仕入単価');
+        if (priceAttr && priceAttr.value) {
+          unitPrice = parseFloat(priceAttr.value) || 0;
+        }
+      }
+      
+      const quantity = parseFloat(item.quantity) || 0;
+      const totalPrice = unitPrice * quantity;
+      
+      groupedByCategory[category].items.push({
+        type: 'zaico',
+        id: item.id,
+        title: item.title || '',
+        quantity: quantity,
+        unit: item.unit || '',
+        unitPrice: unitPrice,
+        totalPrice: totalPrice,
+        etc: item.etc || '',
+        lastUpdated: item.updated_at || ''
+      });
+      
+      // カテゴリの合計金額を更新
+      groupedByCategory[category].totalAmount += totalPrice;
+    });
+
+    // カテゴリごとにソートしてフラットな配列として返す
+    const sortedCategories = Object.keys(groupedByCategory).sort();
+    const flat = [];
+    
+    sortedCategories.forEach(category => {
+      // カテゴリ内の商品を商品名でソート
+      groupedByCategory[category].items.sort((a, b) => 
+        (a.title || '').localeCompare(b.title || '', 'ja')
+      );
+      flat.push(...groupedByCategory[category].items);
+    });
+
+    return { flat, grouped: groupedByCategory };
   }
 }
 

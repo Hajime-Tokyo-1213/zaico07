@@ -97,6 +97,8 @@ class GoogleSheetsService {
       managementNumber: String(row[1] || '').trim(),
       supplier: row[2] || '',
       productName: row[3] || '',
+      purchasePrice: parseFloat(row[4]) || 0, // E列：仕入れ単価
+      trackingNumber: String(row[6] || '').trim(), // G列：追跡番号
       receiveDate: row[7] || '',  // H列：受取日
       shipDate: row[8] || '',     // I列：発送日
       shippedCheck: row[11] === 'TRUE' || row[11] === true,  // L列：発送済みチェック
